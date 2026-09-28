@@ -4,7 +4,7 @@ import { AuthProvider } from '@/lib/auth';
 import { ToastProvider } from '@/lib/toast';
 
 export const metadata: Metadata = {
-  title: 'ApexInventory | Modern Inventory & Point of Sale Management',
+  title: 'Laine Beauty',
   description: 'Enterprise inventory control, multi-channel sales tracking, realtime analytics, and stock ledger management.',
 };
 
