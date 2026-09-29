@@ -17,9 +17,11 @@ import {
   AlertCircle,
   Clock,
   Layers,
+  FileSpreadsheet,
 } from 'lucide-react';
 import Shell from '@/components/layout/Shell';
 import Modal from '@/components/ui/Modal';
+import ExcelUploadModal from '@/components/products/ExcelUploadModal';
 import { StockBadge } from '@/components/ui/Badge';
 import { productsApi, categoriesApi } from '@/lib/api';
 import { CategoryDto, ProductDto, ProductRequest } from '@/lib/types';
@@ -46,6 +48,7 @@ export default function ProductsPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState<ProductDto | null>(null);
 
   // Form state
@@ -232,10 +235,23 @@ export default function ProductsPage() {
         </div>
 
         {isAdmin && (
-          <button onClick={openCreateModal} className="btn btn-primary">
-            <Plus size={16} />
-            <span>Add New Product</span>
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <button
+              id="import-excel-btn"
+              onClick={() => setIsUploadOpen(true)}
+              className="btn btn-secondary"
+              style={{ gap: '0.5rem' }}
+              title="Bulk import products from Excel (.xlsx)"
+            >
+              <FileSpreadsheet size={16} color="var(--success)" />
+              <span>Import Excel</span>
+            </button>
+
+            <button onClick={openCreateModal} className="btn btn-primary">
+              <Plus size={16} />
+              <span>Add New Product</span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -731,6 +747,16 @@ export default function ProductsPage() {
           </div>
         )}
       </Modal>
+
+      {/* EXCEL BULK UPLOAD MODAL */}
+      <ExcelUploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onSuccess={() => {
+          loadProducts();
+          loadCategories();
+        }}
+      />
     </Shell>
   );
 }

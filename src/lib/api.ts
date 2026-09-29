@@ -50,9 +50,12 @@ export const setStoredUser = (user: UserDto | null) => {
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
   const token = getStoredToken();
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
+
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -164,6 +167,15 @@ export const productsApi = {
 
   delete: async (id: string): Promise<ApiResponse> => {
     return request<ApiResponse>(`/api/v1/products/${id}`, { method: 'DELETE' });
+  },
+
+  uploadExcel: async (file: File): Promise<ApiResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return request<ApiResponse>('/api/v1/products/upload', {
+      method: 'POST',
+      body: formData,
+    });
   },
 };
 
